@@ -364,6 +364,20 @@ cancer_df$area_worst_cat <- cut(cancer_df$area_worst, breaks = 5, labels = c('ti
 cancer_df[0:10, c("radius_mean", "radius_cat","area_worst","area_worst_cat")]     
 
 ```
+```
+##    radius_mean radius_cat area_worst area_worst_cat
+## 1        17.99     normal     2019.0         normal
+## 2        20.57     medium     1956.0         normal
+## 3        19.69     medium     1709.0          small
+## 4        11.42      small      567.7           tiny
+## 5        20.29     medium     1575.0          small
+## 6        12.45      small      741.6           tiny
+## 7        18.25     normal     1606.0          small
+## 8        13.71      small      897.0           tiny
+## 9        13.00      small      739.3           tiny
+## 10       12.46      small      711.4           tiny
+```
+
 <a style="display: block; text-align: right;" href="#top"> ↑ Back to Top </a>
 
 Let's now look at the structure of the dataset:
@@ -372,6 +386,9 @@ Let's now look at the structure of the dataset:
 options("lares.palette" =lares_pal("simple"))
 df_str(cancer_df, return = "plot")
 ```
+
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/783a0c4b-54ce-45ca-8dfb-d50bc7249ebc)
+
 <a style="display: block; text-align: right;" href="#top"> ↑ Back to Top </a>
 
 ## PCA (Principal Component Analysis)
@@ -380,11 +397,37 @@ We will apply PCA (Principal Component Analysis) and evaluate the cumulative pro
 
 ```r {r message= FALSE, warning=FALSE}
 pca_result <- prcomp(df_scaled)
-
 summary(pca_result)
+```
+```
+## Importance of components:
+##                           PC1    PC2     PC3     PC4     PC5     PC6     PC7
+## Standard deviation     3.6444 2.3857 1.67867 1.40735 1.28403 1.09880 0.82172
+## Proportion of Variance 0.4427 0.1897 0.09393 0.06602 0.05496 0.04025 0.02251
+## Cumulative Proportion  0.4427 0.6324 0.72636 0.79239 0.84734 0.88759 0.91010
+##                            PC8    PC9    PC10   PC11    PC12    PC13    PC14
+## Standard deviation     0.69037 0.6457 0.59219 0.5421 0.51104 0.49128 0.39624
+## Proportion of Variance 0.01589 0.0139 0.01169 0.0098 0.00871 0.00805 0.00523
+## Cumulative Proportion  0.92598 0.9399 0.95157 0.9614 0.97007 0.97812 0.98335
+##                           PC15    PC16    PC17    PC18    PC19    PC20   PC21
+## Standard deviation     0.30681 0.28260 0.24372 0.22939 0.22244 0.17652 0.1731
+## Proportion of Variance 0.00314 0.00266 0.00198 0.00175 0.00165 0.00104 0.0010
+## Cumulative Proportion  0.98649 0.98915 0.99113 0.99288 0.99453 0.99557 0.9966
+##                           PC22    PC23   PC24    PC25    PC26    PC27    PC28
+## Standard deviation     0.16565 0.15602 0.1344 0.12442 0.09043 0.08307 0.03987
+## Proportion of Variance 0.00091 0.00081 0.0006 0.00052 0.00027 0.00023 0.00005
+## Cumulative Proportion  0.99749 0.99830 0.9989 0.99942 0.99969 0.99992 0.99997
+##                           PC29    PC30
+## Standard deviation     0.02736 0.01153
+## Proportion of Variance 0.00002 0.00000
+## Cumulative Proportion  1.00000 1.00000
+```
 
+```r
 biplot(pca_result)
 ```
+
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/77ae00c5-223a-423e-bff0-76d6502906b8)
 
 It can be observed that up to component 15, a cumulative proportion of 98% is already represented, so the dimensionality can be reduced.
 
@@ -411,7 +454,16 @@ explained_variance <- singular_values_squared / total_variance
 
 # Print the explained variance
 print(explained_variance)
-
+```
+```
+##  [1] 4.427203e-01 1.897118e-01 9.393163e-02 6.602135e-02 5.495768e-02
+##  [6] 4.024522e-02 2.250734e-02 1.588724e-02 1.389649e-02 1.168978e-02
+## [11] 9.797190e-03 8.705379e-03 8.045250e-03 5.233657e-03 3.137832e-03
+## [16] 2.662093e-03 1.979968e-03 1.753959e-03 1.649253e-03 1.038647e-03
+## [21] 9.990965e-04 9.146468e-04 8.113613e-04 6.018336e-04 5.160424e-04
+## [26] 2.725880e-04 2.300155e-04 5.297793e-05 2.496010e-05 4.434827e-06
+```
+```r
 d <- svd_result$d
 u <- svd_result$u
 v <- svd_result$v
@@ -432,6 +484,8 @@ ggplot(df_svd, aes(x = svd_1, y = svd_2, color = diagnosis)) +
        y = "FSecond Singular Component") +
   theme_minimal()
 ```
+
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/f536c145-5dd7-4ed2-9b9e-8e2b04db7223)
 
 <a href="#top" style="display: block; text-align: right;">↑ Back to the top</a>
 
@@ -462,6 +516,8 @@ print(nbclust_result)
 
 ```
 
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/0a8ad43e-c7f8-4fec-911c-4e085c702127)
+
 <a href="#top" style="display: block; text-align: right;">↑ Back to the top</a>
 
 We can conclude that the optimal number of clusters is two. Using the Silhouette analysis method, the point with the highest average silhouette width represents the optimal number of clusters, which is two.
@@ -476,7 +532,6 @@ $$
 $$
 
 "Let's visually examine the classification made by the model compared to the actual classification using the two most correlated variables, concave.points_worst and perimeter_worst:
-
 
 ```r {r message= FALSE, warning=FALSE}
 
@@ -533,8 +588,9 @@ annotate_figure(figure_4, top = text_grob('Comparison: Real Classification vs K-
                                           color = "black", 
                                           face = "bold", size = 10))
 
-
 ```
+
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/7aa78dbf-821f-442f-9008-97ade250efa9)
 
 <a href="#top" style="display: block; text-align: right;">↑ Back to the top</a>
 
@@ -596,21 +652,53 @@ confusion_obj1 <- confusionMatrix(cancer_df1$label, cancer_df1$diagnosis)
 # Print the formatted confusion matrix and performance statistics
 cat("Matriz de confusión para el Modelo Kmedoids-Euclidean\n\n")
 print(confusion_obj1)
+```
 
+```
+## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   B   M
+##          B 340  45
+##          M  17 167
+##                                           
+##                Accuracy : 0.891           
+##                  95% CI : (0.8625, 0.9154)
+##     No Information Rate : 0.6274          
+##     P-Value [Acc > NIR] : < 2.2e-16       
+##                                           
+##                   Kappa : 0.7605          
+##                                           
+##  Mcnemar's Test P-Value : 0.0006058       
+##                                           
+##             Sensitivity : 0.9524          
+##             Specificity : 0.7877          
+##          Pos Pred Value : 0.8831          
+##          Neg Pred Value : 0.9076          
+##              Prevalence : 0.6274          
+##          Detection Rate : 0.5975          
+##    Detection Prevalence : 0.6766          
+##       Balanced Accuracy : 0.8701          
+##                                           
+##        'Positive' Class : B               
+##
+```
+```r
 # Save the differente metrics to compare later
 kmedoids_model1_precision <- confusion_obj1$byClass["Pos Pred Value"]
 kmedoids_model1_accuracy <- confusion_obj1$overall['Accuracy']
 kmedoids_model1_sensitivity <- confusion_obj1$byClass["Sensitivity"]
 kmedoids_model1_fmeasure <- confusion_obj1$byClass["F1"]
-
 ```
 
-**K-Medoids Model with "Euclidean" Distance Metric**<br><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;We can see that the model has:<br><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Precision: **&nbsp;&nbsp;`r round(kmedoids_model1_precision, digits=4)`<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Accuracy: **`r round(kmedoids_model1_accuracy, digits=4)`<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Sensitivity: **&nbsp;&nbsp;`r round(kmedoids_model1_sensitivity, digits=4)`<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**F-Measure: **&nbsp;&nbsp;`r round(kmedoids_model1_fmeasure, digits=4)`<br>
+**K-Medoids Model with “Euclidean” Distance Metric**
+
+We can see that the model has:
+
+**Precision:**   0.8831
+**Accuracy:** 0.891
+**Sensitivity:**   0.9524
+**F-Measure:**   0.9164
 
 <a href="#top" style="display: block; text-align: right;">↑ Back to the top</a>
 
@@ -621,8 +709,8 @@ The Manhattan Distance Metric:
 $$
 \displaystyle \vert u-v\vert = \sum_{i=1}^n \vert u_i-v_i\vert
 $$
-```r {r message= FALSE, warning=FALSE}
 
+```r {r message= FALSE, warning=FALSE}
 library(cluster)
 library(factoextra)
 library(ggplot2)
@@ -675,10 +763,11 @@ figure_4 <- ggarrange(plot15 + rremove("xlab"), plot16,
 annotate_figure(figure_4, top = text_grob('Comparison: Real Classification vs K-medoids/Mahattan\nVariable: concave.points_worst -- perimeter_worst',
                                           color = "black", 
                                           face = "bold", size = 10))
-
 ```
-<a style="display: block; text-align: right;"href="#top"> ↑ Volver al inicio </a>
 
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/8e5613d8-6b47-45d1-abcf-982ede0d0368)
+
+<a href="#top" style="display: block; text-align: right;">↑ Back to the top</a>
 
 ### Evaluation of the K-Medoids Model with "Manhattan" Distance Metric
 
@@ -706,7 +795,38 @@ confusion_obj2 <- confusionMatrix(cancer_df2$label, cancer_df2$diagnosis)
 # Print the formatted confusion matrix and performance statistics
 cat("Matriz de confusión para el Modelo Kmedoids-Manhattan\n\n")
 print(confusion_obj2)
+```
+```
+## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   B   M
+##          B 348  24
+##          M   9 188
+##                                           
+##                Accuracy : 0.942           
+##                  95% CI : (0.9195, 0.9597)
+##     No Information Rate : 0.6274          
+##     P-Value [Acc > NIR] : < 2e-16         
+##                                           
+##                   Kappa : 0.8741          
+##                                           
+##  Mcnemar's Test P-Value : 0.01481         
+##                                           
+##             Sensitivity : 0.9748          
+##             Specificity : 0.8868          
+##          Pos Pred Value : 0.9355          
+##          Neg Pred Value : 0.9543          
+##              Prevalence : 0.6274          
+##          Detection Rate : 0.6116          
+##    Detection Prevalence : 0.6538          
+##       Balanced Accuracy : 0.9308          
+##                                           
+##        'Positive' Class : B               
+##
+```
 
+```r
 # Save the differente metrics to compare later
 kmedoids_model2_precision <- confusion_obj2$byClass["Pos Pred Value"]
 kmedoids_model2_accuracy <- confusion_obj2$overall['Accuracy']
@@ -755,8 +875,9 @@ styled_table <- kable(metrics, caption = "<strong>Comparación del modelo No Sup
   row_spec(nrow(metrics), bold = TRUE, background = "lightgray")
 
 styled_table
-
 ```
+
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/c02fb151-467f-49bc-a9b3-2c200d9fdddd)
 
 It can be observed that both models perform quite well in classifying the expected two clusters. However, comparing the evaluation metrics, it appears that in this case the PAM model performs better with the Manhattan distance metric, which depends greatly on the type of data and how it is grouped.
 
@@ -813,13 +934,17 @@ points(max_silhouette_eps, max_silhouette_score, col = "red", pch = 16)
 text(max_silhouette_eps, max_silhouette_score, 
      labels = paste("Max Silhouette Score:\nEpsilon =", round(max_silhouette_eps, 2)), 
      pos = 1)
+```
 
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/cb340295-1bc1-4615-b6e7-4ad6c2980251)
+
+```r
 plot(eps_values, num_outliers, type = "l",
      xlab = "Epsilon (eps)", ylab = "Number of Outliers",
      main = "DBSCAN: Number of Outliers vs. Epsilon")
-
-
 ```
+
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/4569bc5b-a07e-419d-b327-a12b28ec82cd)
 
 <a href="#top" style="display: block; text-align: right;">↑ Back to the top</a>
 
@@ -877,6 +1002,9 @@ annotate_figure(figure_5, top = text_grob('Comparison: Real Classification vs DB
                                           face = "bold", size = 10))
 ```
 
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/52aa38a2-1b21-418a-9dfe-e554a8f9ae51)
+
+
 <a href="#top" style="display: block; text-align: right;">↑ Back to the top</a>
 
 
@@ -902,7 +1030,37 @@ confusion_obj_dbscan <- confusionMatrix(cancer_df_dbscan$label, cancer_df_dbscan
 # Print the formatted confusion matrix and performance statistics
 cat("Confusion Matrix for DBSCAN Clustering (epsilon = 2.65)\n\n")
 print(confusion_obj_dbscan)
-
+```
+```
+## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   B   M
+##          B 277  64
+##          M  80 148
+##                                           
+##                Accuracy : 0.7469          
+##                  95% CI : (0.7091, 0.7822)
+##     No Information Rate : 0.6274          
+##     P-Value [Acc > NIR] : 8.93e-10        
+##                                           
+##                   Kappa : 0.4669          
+##                                           
+##  Mcnemar's Test P-Value : 0.2113          
+##                                           
+##             Sensitivity : 0.7759          
+##             Specificity : 0.6981          
+##          Pos Pred Value : 0.8123          
+##          Neg Pred Value : 0.6491          
+##              Prevalence : 0.6274          
+##          Detection Rate : 0.4868          
+##    Detection Prevalence : 0.5993          
+##       Balanced Accuracy : 0.7370          
+##                                           
+##        'Positive' Class : B               
+##
+```
+ ``r
 # Save the different metrics to compare later
 dbscan_model_precision <- confusion_obj_dbscan$byClass["Pos Pred Value"]
 dbscan_model_accuracy <- confusion_obj_dbscan$overall['Accuracy']
@@ -911,12 +1069,14 @@ dbscan_model_fmeasure <- confusion_obj_dbscan$byClass["F1"]
 
 ```
 
-**DBSCAN Model with Epsilon 2.65 and MinPts 10**<br><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;We can see that the model has:<br><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Precision: **&nbsp;&nbsp;`r round(dbscan_model_precision, digits=4)`<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Accuracy: **`r round(dbscan_model_accuracy, digits=4)`<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Sensitivity: **&nbsp;&nbsp;`r round(dbscan_model_sensitivity, digits=4)`<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**F-Measure: **&nbsp;&nbsp;`r round(dbscan_model_fmeasure, digits=4)`<br>
+**DBSCAN Model with Epsilon 2.65 and MinPts 10**
+
+We can see that the model has:
+
+**Precision:**   0.8123
+**Accuracy:** 0.7469
+**Sensitivity:**   0.7759
+**F-Measure:**   0.7937
 
 We can see how the DBSCAN model performs worse than the previous K-medoids (PAM) models due to the nature of the dataset and the complexity of tuning the parameters. For now, we can say that for this binary classification, classifiers like k-means or k-medoids are quite effective as opposed to more complex ones like DBSCAN.
 
