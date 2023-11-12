@@ -174,22 +174,38 @@ In this section, the structure of the dataset is presented both in tables and in
 
 # Check first ten rows for preview
 kable(cancer_df[0:10,],caption="<strong>Dataset Preview</strong>") %>% kable_classic(full_width=F, html_font = "Cambria") %>%kable_styling(bootstrap_options = c("striped", "hover", "condensed","responsive","bordered"),position = "left", font_size = 10) %>% row_spec(0,bold = TRUE, align = "c")
+```
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/dd0af54b-69c8-4788-9fd8-bcd87e371602)
 
-# Let's see data structure in botj summary tables and plot
+```r {r message= FALSE, warning=FALSE}
+# Let's see data structure in both summary tables and plot
 options("lares.palette" =lares_pal("simple"))
 df_str(cancer_df, return = "plot")
+```
 
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/5a230872-5ae4-46ca-a2ee-f623022d8ce1)
+
+```r
 # Summary Stats for data
 summary1 <- data.frame(unclass(summary(cancer_df[,0:10])),check.names = FALSE)
 summary2 <- data.frame(unclass(summary(cancer_df[,11:20])),check.names = FALSE)
 summary3 <- data.frame(unclass(summary(cancer_df[,21:31])),check.names = FALSE)
 
 kable(summary1, caption = "<strong>Summary 1 Stats</strong>") %>% kable_classic(full_width=F, html_font = "Cambria") %>%kable_styling(bootstrap_options = c("striped", "hover", "condensed","responsive","bordered"),position = "left",font_size = 10) %>% row_spec(0,bold = TRUE, align = "c")
+```
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/c096c3a5-e902-4d08-a784-5f560e1a1ee9)
 
+```r
 kable(summary2, caption = "<strong>Summary 2 Stats</strong>") %>% kable_classic( full_width=F, html_font = "Cambria") %>%kable_styling(bootstrap_options = c("striped", "hover", "condensed","responsive","bordered"),position = "left",font_size = 10)  %>% row_spec(0,bold = TRUE, align = "c")
+```
 
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/ac0362a8-f3e4-42e8-9b0e-df839e68482e)
+
+```r
 kable(summary3, caption = "<strong>Summary 3 Stats</strong>") %>% kable_classic(full_width=F, html_font = "Cambria") %>%kable_styling(bootstrap_options = c("striped", "hover", "condensed","responsive","bordered"),position = "left",font_size = 10) %>% row_spec(0,bold = TRUE, align = "c") 
 ```
+
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/23181322-e08d-4e72-8be9-9603f6f3f9e4)
 
 We can see that there are no missing or invalid values in the dataset; the 'diagnosis' column takes binary values of malignant 'M' or benign 'B'. This will be used in the next stage of the project to validate the different classification or regression models that are relevant to evaluate.
 
@@ -209,8 +225,11 @@ nan_values <- apply(cancer_df, 2, function(x) any(is.nan(x)))
 # Display columns with NaN values
 cols_with_nan <- names(cancer_df)[nan_values]
 print(paste("Number of NaN values is", length(cols_with_nan)))
-
 ```
+```
+## [1] "Number of NaN values is 0"
+```
+
 <a style="display: block; text-align: right;" href="#top"> ↑ Back to Top </a>
 
 ### Exploration of Variables
@@ -228,6 +247,9 @@ cancer_df %>% corr_var(diagnosis, ceiling = 60, top = 10, subtitle = NA, method 
                                         size = 0.5, linetype = "solid"))
 ```
 
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/4eaec7fa-daba-4abe-b21d-5317350f8085)
+
+
 <a style="display: block; text-align: right;" href="#top"> ↑ Back to Top </a>
 
 Let's look at the correlation and bivariate pair distribution of the first six variables:
@@ -237,12 +259,17 @@ ggpairs(cancer_df,columns = c('diagnosis',	'concave.points_worst',	'perimeter_wo
         panel.background = element_rect(fill = "#f6f1eb", 
                                         colour = "#f6f1eb", 
                                         size = 0.5, linetype = "solid"))
+```
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/8f59f7b4-4024-4364-8309-8ee55c977361)
 
+```r
 ggpairs(cancer_df,columns = c('diagnosis',	'radius_worst',	'perimeter_mean',	'area_worst'), mapping = aes(color=cancer_df$diagnosis))+ scale_fill_manual(values=c('#66c2a5','#fc8d62'))+scale_colour_manual(values=c('#66c2a5','#fc8d62'))+theme(legend.title = element_blank(),
         panel.background = element_rect(fill = "#f6f1eb", 
                                         colour = "#f6f1eb", 
                                         size = 0.5, linetype = "solid"))
 ```
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/5d8c5112-5378-4026-a883-9bb710626543)
+
 <a style="display: block; text-align: right;" href="#top"> ↑ Back to Top </a>
 
 With this, we can get an idea of the most important variables for the correct diagnosis using the data. However, we should compare this with what we obtain from the PCA (Principal Component Analysis) and SVD (Singular Value Decomposition) studies to see if it corresponds.
@@ -252,14 +279,41 @@ Another important visualization from the 'lares' package that we can use is the 
 ```r {r message= FALSE, warning=FALSE}
 options("lares.palette" = c("#66c2a5" = "black", "#fc8d62" = 'white'))
 cancer_df %>% distr(diagnosis, concave.points_worst, breaks = 5)+theme(axis.text.x = element_text(size=10, angle=45))
-cancer_df %>% distr(diagnosis, perimeter_worst, breaks = 5)+theme(axis.text.x = element_text(size=10, angle=45))
-cancer_df %>% distr(diagnosis, concave.points_mean, breaks = 5)+theme(axis.text.x = element_text(size=10, angle=45))
-cancer_df %>% distr(diagnosis, radius_worst, breaks = 5)+theme(axis.text.x = element_text(size=10, angle=45))
-cancer_df %>% distr(diagnosis, perimeter_mean, breaks = 5)+theme(axis.text.x = element_text(size=10, angle=45))
-cancer_df %>% distr(diagnosis, area_worst, breaks = 5)+theme(axis.text.x = element_text(size=10, angle=45))
-
 ```
+
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/2c45d823-0dea-4996-93aa-281698392db6)
+
+```r
+cancer_df %>% distr(diagnosis, perimeter_worst, breaks = 5)+theme(axis.text.x = element_text(size=10, angle=45))
+```
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/3edd385c-e664-4412-b307-88c28f8a80ac)
+
+```r
+cancer_df %>% distr(diagnosis, concave.points_mean, breaks = 5)+theme(axis.text.x = element_text(size=10, angle=45))
+```
+
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/4dc62dc3-1547-4bb7-b3e1-a10fa1b31843)
+
+```r
+cancer_df %>% distr(diagnosis, radius_worst, breaks = 5)+theme(axis.text.x = element_text(size=10, angle=45))
+```
+
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/4fb2db67-0257-4bca-8164-36bd404196cc)
+
+```r
+cancer_df %>% distr(diagnosis, perimeter_mean, breaks = 5)+theme(axis.text.x = element_text(size=10, angle=45))
+```
+
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/20142665-f37a-4f88-9717-245b6c877b85)
+
+```r
+cancer_df %>% distr(diagnosis, area_worst, breaks = 5)+theme(axis.text.x = element_text(size=10, angle=45))
+```
+
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/a8358531-9812-4827-ab10-7cfd52f5690e)
+
 In general, it can be observed that some variables classify the diagnosis into the two groups better than others. Also, from this tool, we see how we can discretize certain variables; in this case, we use 5 intervals.
+
 <a style="display: block; text-align: right;" href="#top"> ↑ Back to Top </a>
 
 ### Identification of Outliers
@@ -293,6 +347,9 @@ ggplot(df_long, aes(x = variable, y = value, fill =variable)) +
                                         colour = "#f6f1eb", 
                                         size = 0.5, linetype = "solid"))
 ```
+![image](https://github.com/jlgarciatucci/R-Data-Science-Breast-Cancer-Wisconsin/assets/98712473/15926a52-bac2-42ca-83be-e2cb5e0da992)
+
+
 <a style="display: block; text-align: right;" href="#top"> ↑ Back to Top </a>
 
 ## Discretization
